@@ -8,6 +8,8 @@ import (
 	"os"
 	"os/signal"
 	"time"
+
+	_ "github.com/lib/pq"
 )
 
 type Config struct {
