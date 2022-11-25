@@ -19,6 +19,6 @@ type Repository interface {
 	CreateUser(user models.User) error
 }
 
-func CreateUser(user models.User) {
+func (repo *Repo) CreateUser(user models.User) {
 
 }
