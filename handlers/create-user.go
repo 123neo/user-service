@@ -3,45 +3,39 @@ package handlers
 import (
 	"log"
 	"net/http"
+	"user-service/config"
 	"user-service/models"
+	"user-service/services"
 )
 
-type jsonResponse struct {
-	Error   bool        `json: "error,omitEmpty"`
-	Message string      `json: "message,omitEmpty"`
-	Data    interface{} `json: "data,omitEmpty"`
-}
+func CreateHandlerFunc(app *config.Config) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
 
-func CreateUserHandler(w http.ResponseWriter, r *http.Request) {
+		var user models.User
 
-	var user models.User
+		err := decodeCreateUserRequest(w, r, &user)
 
-	err := decodeCreateUserRequest(w, r, &user)
+		var payload CreateUserResponse
 
-	var payload jsonResponse
-
-	if err != nil {
-		log.Println("Error in decoding JSON : ", err)
-		payload = jsonResponse{
-			Error:   true,
-			Message: err.Error(),
+		if err != nil {
+			app.log.Println("Error in decoding JSON : ", err)
+			_ = errorJSON(w, err, http.StatusBadRequest)
+			return
 		}
-	} else {
-		payload = jsonResponse{
+
+		service := services.NewService(app.repo, user)
+		repsonse, err := service.CreateUser()
+
+		payload = CreateUserResponse{
 			Data: user,
 		}
-	}
 
-	// fmt.Fprintf(w, "User: %+v", user)
-
-	err = encodeResponse(w, http.StatusAccepted, payload)
-
-	if err != nil {
-		log.Println("Some error occured: ", err)
-		payload := jsonResponse{
-			Error:   true,
-			Message: err.Error(),
-		}
 		err = encodeResponse(w, http.StatusAccepted, payload)
+
+		if err != nil {
+			log.Println("Some error occured: ", err)
+			_ = errorJSON(w, err, http.StatusBadRequest)
+			return
+		}
 	}
 }

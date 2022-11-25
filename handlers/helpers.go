@@ -58,7 +58,7 @@ func errorJSON(w http.ResponseWriter, err error, status ...int) error {
 		statusCode = status[0]
 	}
 
-	var payload jsonResponse
+	var payload CreateUserResponse
 	payload.Error = true
 	payload.Message = err.Error()
 

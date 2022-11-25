@@ -2,13 +2,14 @@ package main
 
 import (
 	"net/http"
+	"user-service/config"
 	"user-service/handlers"
 )
 
-func (app *Config) routes() http.Handler {
+func routes(app *config.Config) http.Handler {
 	mux := http.NewServeMux()
 
-	mux.HandleFunc("/create-user", handlers.CreateUserHandler)
+	mux.HandleFunc("/create-user", handlers.CreateHandlerFunc(app))
 
 	return mux
 }

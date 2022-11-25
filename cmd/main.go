@@ -8,14 +8,11 @@ import (
 	"os"
 	"os/signal"
 	"time"
+	"user-service/config"
+	"user-service/repository"
 
 	_ "github.com/lib/pq"
 )
-
-type Config struct {
-	db  *sql.DB
-	log *log.Logger
-}
 
 // Server start for go
 
@@ -28,14 +25,13 @@ func main() {
 		log.Println("Failed trying to connect Postgres...")
 	}
 
-	app := Config{
-		db:  conn,
-		log: l,
-	}
+	repo := repository.NewRepo(conn)
+
+	app := config.NewConfig(conn, repo, l)
 
 	s := &http.Server{
 		Addr:         ":8080",
-		Handler:      app.routes(),
+		Handler:      routes(app),
 		IdleTimeout:  120 * time.Second,
 		ReadTimeout:  1 * time.Second,
 		WriteTimeout: 1 * time.Second,
