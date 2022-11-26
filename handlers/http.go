@@ -13,8 +13,3 @@ type CreateUserResponse struct {
 	Message string      `json: "message,omitEmpty"`
 	Data    interface{} `json: "data,omitEmpty"`
 }
-
-// type CreateUserResponse struct {
-// 	ID  string `json:"id"`
-// 	Err error  `json:"error,omitempty"`
-// }

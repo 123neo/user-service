@@ -2,16 +2,19 @@ package repository
 
 import (
 	"database/sql"
+	"log"
 	"user-service/models"
 )
 
 type Repo struct {
-	Db *sql.DB
+	Db  *sql.DB
+	log *log.Logger
 }
 
-func NewRepo(Db *sql.DB) *Repo {
+func NewRepo(Db *sql.DB, log *log.Logger) Repository {
 	return &Repo{
-		Db: Db,
+		Db:  Db,
+		log: log,
 	}
 }
 
@@ -19,6 +22,17 @@ type Repository interface {
 	CreateUser(user models.User) error
 }
 
-func (repo *Repo) CreateUser(user models.User) {
+func (repo *Repo) CreateUser(user models.User) error {
+	sqlStatement := `
+	INSERT INTO users (userId, firstName, lastName, email, contact)
+	VALUES ($1, $2, $3, $4, $5)`
 
+	repo.log.Println("User: ", user)
+
+	_, err := repo.Db.Exec(sqlStatement, user.ID, user.FirstName, user.LastName, user.Email, user.Contact)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

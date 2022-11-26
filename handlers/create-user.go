@@ -15,19 +15,23 @@ func CreateHandlerFunc(app *config.Config) http.HandlerFunc {
 
 		err := decodeCreateUserRequest(w, r, &user)
 
-		var payload CreateUserResponse
-
 		if err != nil {
 			app.Log.Println("Error in decoding JSON : ", err)
 			_ = errorJSON(w, err, http.StatusBadRequest)
 			return
 		}
 
-		service := services.NewService(app.Repo, user)
-		repsonse, err := service.CreateUser()
+		service := services.NewService(app.Repo, app.Log)
+		repsonse, err := service.CreateUser(user)
 
-		payload = CreateUserResponse{
-			Data: user,
+		if err != nil {
+			log.Println("Some error occured: ", err)
+			_ = errorJSON(w, err, http.StatusBadRequest)
+			return
+		}
+
+		payload := CreateUserResponse{
+			Data: repsonse,
 		}
 
 		err = encodeResponse(w, http.StatusAccepted, payload)

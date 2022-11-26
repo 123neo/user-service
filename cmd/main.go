@@ -25,7 +25,7 @@ func main() {
 		log.Println("Failed trying to connect Postgres...")
 	}
 
-	repo := repository.NewRepo(conn)
+	repo := repository.NewRepo(conn, l)
 
 	app := config.NewConfig(conn, repo, l)
 

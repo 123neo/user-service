@@ -1,23 +1,31 @@
 package services
 
 import (
+	"log"
 	"user-service/models"
 	"user-service/repository"
 
 	"github.com/gofrs/uuid"
 )
 
-type Service struct {
-	repo *repository.Repo
-	user models.User
+type service struct {
+	repo repository.Repository
+	log  *log.Logger
 }
 
-func NewService(repo *repository.Repo, user models.User) *Service {
-	return &Service{repo: repo, user: user}
+func NewService(repo repository.Repository, log *log.Logger) Service {
+	return &service{repo: repo, log: log}
 }
 
-func (s *Service) CreateUser(user models.User) (string, error) {
-	uuid := uuid.NewV4()
+type Service interface {
+	CreateUser(user models.User) (string, error)
+}
+
+func (s *service) CreateUser(user models.User) (string, error) {
+	uuid, err := uuid.NewV4()
+	if err != nil {
+		s.log.Println("Error in generating uuid..")
+	}
 	id := uuid.String()
 	user.ID = id
 

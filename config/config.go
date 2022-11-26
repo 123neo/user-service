@@ -8,11 +8,11 @@ import (
 
 type Config struct {
 	Db   *sql.DB
-	Repo *repository.Repo
+	Repo repository.Repository
 	Log  *log.Logger
 }
 
-func NewConfig(conn *sql.DB, repo *repository.Repo, log *log.Logger) *Config {
+func NewConfig(conn *sql.DB, repo repository.Repository, log *log.Logger) *Config {
 	return &Config{
 		Db:   conn,
 		Repo: repo,
