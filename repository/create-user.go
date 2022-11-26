@@ -24,7 +24,7 @@ type Repository interface {
 
 func (repo *Repo) CreateUser(user models.User) error {
 	sqlStatement := `
-	INSERT INTO users (userId, firstName, lastName, email, contact)
+	INSERT INTO users (user_id, first_name, last_name, email, contact)
 	VALUES ($1, $2, $3, $4, $5)`
 
 	repo.log.Println("User: ", user)
