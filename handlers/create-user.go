@@ -10,6 +10,8 @@ import (
 func CreateHandlerFunc(app *config.Config) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 
+		ctx := r.Context()
+
 		var user models.User
 
 		err := decodeCreateUserRequest(w, r, &user)
@@ -21,7 +23,7 @@ func CreateHandlerFunc(app *config.Config) http.HandlerFunc {
 		}
 
 		service := services.NewService(app.Repo, app.Log)
-		repsonse, err := service.CreateUser(user)
+		repsonse, err := service.CreateUser(ctx, user)
 
 		if err != nil {
 			app.Log.Println("Some error occured: ", err)

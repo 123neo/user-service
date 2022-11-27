@@ -1,6 +1,7 @@
 package services
 
 import (
+	"context"
 	"log"
 	"user-service/models"
 	"user-service/repository"
@@ -18,10 +19,10 @@ func NewService(repo repository.Repository, log *log.Logger) Service {
 }
 
 type Service interface {
-	CreateUser(user models.User) (string, error)
+	CreateUser(ctx context.Context, user models.User) (string, error)
 }
 
-func (s *service) CreateUser(user models.User) (string, error) {
+func (s *service) CreateUser(ctx context.Context, user models.User) (string, error) {
 	uuid, err := uuid.NewV4()
 	if err != nil {
 		s.log.Println("Error in generating uuid..")
@@ -29,7 +30,7 @@ func (s *service) CreateUser(user models.User) (string, error) {
 	id := uuid.String()
 	user.ID = id
 
-	if err := s.repo.CreateUser(user); err != nil {
+	if err := s.repo.CreateUser(ctx, user); err != nil {
 		return "", err
 	}
 	return id, nil
