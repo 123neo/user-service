@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"log"
 	"net/http"
 	"user-service/config"
 	"user-service/models"
@@ -25,7 +24,7 @@ func CreateHandlerFunc(app *config.Config) http.HandlerFunc {
 		repsonse, err := service.CreateUser(user)
 
 		if err != nil {
-			log.Println("Some error occured: ", err)
+			app.Log.Println("Some error occured: ", err)
 			_ = errorJSON(w, err, http.StatusBadRequest)
 			return
 		}
@@ -37,7 +36,7 @@ func CreateHandlerFunc(app *config.Config) http.HandlerFunc {
 		err = encodeResponse(w, http.StatusAccepted, payload)
 
 		if err != nil {
-			log.Println("Some error occured: ", err)
+			app.Log.Println("Some error occured: ", err)
 			_ = errorJSON(w, err, http.StatusBadRequest)
 			return
 		}
