@@ -12,9 +12,15 @@ func CreateHandlerFunc(app *config.Config) http.HandlerFunc {
 
 		ctx := r.Context()
 
+		// decoding the request payload
+
 		var user models.User
 
 		err := decodeCreateUserRequest(w, r, &user)
+
+		requestPaylod := CreateUserRequest{
+			user: user,
+		}
 
 		if err != nil {
 			app.Log.Println("Error in decoding JSON : ", err)
@@ -22,14 +28,18 @@ func CreateHandlerFunc(app *config.Config) http.HandlerFunc {
 			return
 		}
 
+		// calling the required service
+
 		service := services.NewService(app.Repo, app.Log)
-		repsonse, err := service.CreateUser(ctx, user)
+		repsonse, err := service.CreateUser(ctx, requestPaylod.user)
 
 		if err != nil {
 			app.Log.Println("Some error occured: ", err)
 			_ = errorJSON(w, err, http.StatusBadRequest)
 			return
 		}
+
+		// sending the response back to the client
 
 		payload := CreateUserResponse{
 			Data: repsonse,
